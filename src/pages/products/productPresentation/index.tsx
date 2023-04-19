@@ -1,9 +1,9 @@
-import shoppingCartImg from '../../../assets/productPresentation/shoppingCart.svg'
-import boxImg from '../../../assets/productPresentation/box.svg'
-import timerImg from '../../../assets/productPresentation/timer.svg'
-import hotCoffeImg from '../../../assets/productPresentation/hotCoffe.svg'
+import shoppingCartImg from '../../../assets/products/productPresentation/shoppingCart.svg'
+import boxImg from '../../../assets/products/productPresentation/box.svg'
+import timerImg from '../../../assets/products/productPresentation/timer.svg'
+import hotCoffeImg from '../../../assets/products/productPresentation/hotCoffe.svg'
 
-import coffeImg from '../../../assets/productPresentation/coffe.svg'
+import coffeImg from '../../../assets/products/productPresentation/coffe.svg'
 import { PresentationContainer, SubDescription, TextAndImage, Title, BenefitsCard, Benefits, CardContainer } from './styles'
 
 const styles = {
@@ -39,14 +39,14 @@ export function ProductPresentation() {
                     <img src={shoppingCartImg} alt="" />
                 
                     </Benefits>
-                    <p>Entrega rápida e rastreada</p>
+                    <p>Compra simples e segura</p>
                 </BenefitsCard>
                 <BenefitsCard>
                     <Benefits style={styles.BackgroundDark}>
                     <img src={boxImg} alt="" />
                 
                     </Benefits>
-                    <p>Entrega rápida e rastreada</p>
+                    <p>Embalagem mantém o café intacto</p>
                 </BenefitsCard>
             </CardContainer>
 
@@ -63,7 +63,7 @@ export function ProductPresentation() {
                     <img src={hotCoffeImg} alt="" />
                 
                     </Benefits>
-                    <p>Entrega rápida e rastreada</p>
+                    <p>O café chega fresquinho até você</p>
                 </BenefitsCard>
             </CardContainer>
         </PresentationContainer>

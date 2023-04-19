@@ -20,7 +20,7 @@ export const TextAndImage = styled.div`
 `
 
 export const BenefitsCard = styled.div`
-    width: 280px;
+    width: 300px;
     display: flex;
     align-items: center;
     gap: 0.8rem;
@@ -45,6 +45,6 @@ export const Benefits = styled.div`
 
 export const CardContainer = styled.div`
     position: relative;
-    top: -110px;
+    top: -105px;
     display: flex;
 `
