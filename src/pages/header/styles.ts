@@ -19,11 +19,29 @@ export const ShoppingCartStyle = styled.div`
     img {
         width: 29px;
     }
-    padding: 7px;
+
+    padding-left: 7px;
+    padding-top: 7px;
+    padding-bottom: 7px;
     background-color: #F1E9C9;
     border-radius: 4px;
 
     margin-left: 1rem;
+
+    span {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        top: -20px;
+        left: 5px;
+        
+        color: white;
+        background-color: #C47F17;
+        width: 20px;
+        height: 20px;
+        border-radius: 9999px;
+    
+    }
 `
 
 export const Location = styled.div`
