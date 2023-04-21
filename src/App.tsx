@@ -40,7 +40,7 @@ export function App () {
   return (
    <>
     <GlobalStyles/>
-    <Header/>
+    <Header ShoppingCartLength={}/>
     <Products/>
    </>
   )
