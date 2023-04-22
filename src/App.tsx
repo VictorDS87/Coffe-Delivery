@@ -1,5 +1,5 @@
 import { api } from "./lib/axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Products } from "./pages/products";
 import { GlobalStyles } from "./styles/global";
 import { Header } from "./pages/header";
@@ -35,13 +35,29 @@ import { Header } from "./pages/header";
 //     });
 //   };
 
+interface ShppingCartProps {
+    id: string
+    image: string
+    name: string
+    value: number 
+}
 export function App () {
+  const [shoppingCart, setShoppingCart] = useState<ShppingCartProps[]>([])
+  let quantityInShoppingCart = shoppingCart.length
 
+  function shoppingCartList(childInfo: any) {
+    setShoppingCart(childInfo)
+   
+  }
+  useEffect(() => {
+ 
+    quantityInShoppingCart = shoppingCart.length
+  }, [shoppingCart])
   return (
    <>
     <GlobalStyles/>
-    <Header ShoppingCartLength={}/>
-    <Products/>
+    <Header childInfo={quantityInShoppingCart}/>
+    <Products values={shoppingCartList}/>
    </>
   )
 }
