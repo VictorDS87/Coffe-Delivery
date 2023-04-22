@@ -5,7 +5,7 @@ import { Amount, ButtonCart, CoffeCard, Coffes, ContainerCoffeCard, Description,
 import { api } from '../../lib/axios'
 import { useEffect, useState } from 'react'
 
-interface Task {
+interface Product {
     id: string
     image: string
     characteristics: []
@@ -15,27 +15,33 @@ interface Task {
     amount: number
 }
 
+interface characteristicProps {
+    name: string
+}
+
 interface ShppingCartProps {
     id: string
     image: string
     name: string
-    value: number
+    value: number 
 }
 
-export function Products() {
-    const [tasks, setTasks] = useState<Task[]>([])
+interface ProductProps {
+    values: (info: ShppingCartProps[]) => void;
+}
+export function Products({ values }: ProductProps) {
+    const [products, setProducts] = useState<Product[]>([])
     const [isLoading, setIsLoading] = useState(false)
     const [shoppingCart, setShoppingCart] = useState<ShppingCartProps[]>([])
 
-    async function patinho() {
+    async function fetchProducts() {
         let response = await api.get('products')
-        console.log(response)
-        setTasks(response.data)
+        setProducts(response.data)
     }
 
-    async function teste(e:any) {
+    async function increaseQuantity(e:any) {
         setIsLoading(true)
-        // Buscar valor de amount 
+        // Buscar valor de amount  e alterar quantidade
         const response = await api.get('products/'+e.target.id) 
         const responseAmount = response.data.amount + 1
 
@@ -43,15 +49,15 @@ export function Products() {
         await api.patch('products/'+e.target.id, { amount: responseAmount })
 
         // Atualizar o valor no useState
-        const tempTasks = [...tasks];
-        const taskIndex = tasks.findIndex((task) => {return task.id == response.data.id;});        
-        tempTasks[taskIndex].amount = responseAmount;
-        setTasks(tempTasks);
+        const tempProducts = [...products];
+        const productIndex = products.findIndex((task) => {return task.id == response.data.id;});        
+        tempProducts[productIndex].amount = responseAmount;
+        setProducts(tempProducts);
 
         setIsLoading(false)
     }
     
-    async function teste2(e:any) {
+    async function reduceQuantity(e:any) {
         setIsLoading(true)
         // Buscar valor de amount 
         const response = await api.get('products/'+e.target.id) 
@@ -61,50 +67,58 @@ export function Products() {
         await api.patch('products/'+e.target.id, { amount: responseAmount })
 
         // Atualizar o valor no useState
-        const tempTasks = [...tasks];
-        const taskIndex = tasks.findIndex((task) => {return task.id == response.data.id;});        
-        tempTasks[taskIndex].amount = responseAmount;
-        setTasks(tempTasks);
+        const tempProducts = [...products];
+        const productIndex = products.findIndex((task) => {return task.id == response.data.id;});        
+        tempProducts[productIndex].amount = responseAmount;
+        setProducts(tempProducts);
 
         setIsLoading(false)
     }
 
-    async function teste3(e: any) {
+    async function addToShoppingCart(e: any) {
         const response = await api.get('products/'+e.target.id) 
-        console.log(response)
         
-        setShoppingCart((state) => [...state, {
-            id: response.data.id, 
-            image: response.data.image, 
-            name: response.data.name, value: 
-            response.data.value
-        }])
-        console.log(shoppingCart.length)
+        const validationRepeatedItem = shoppingCart.filter(product => product.id === response.data.id)
+        if(validationRepeatedItem.length == 0){
+            setShoppingCart((state) => [...state, {
+                id: response.data.id, 
+                image: response.data.image, 
+                name: response.data.name, value: 
+                response.data.value
+            }])
+            
+        }else {
+            alert('Você já tem esse item salvo no carrinho, aumenta a quantidade ou remova ele do carrinho')
+        }
     }
 
     useEffect(() => {
-        patinho()
+        fetchProducts()
     }, [])
+
+    useEffect(() => {
+        values(shoppingCart)
+    }, [shoppingCart])
     return (
         <div>
             <ProductPresentation />
             <Coffes>
                 <TitleSpan>Nossos cafés</TitleSpan>
                 <ContainerCoffeCard>
-                { tasks.map((task: Task) => 
-                    <CoffeCard key={task.id}>
-                        <img src={task.image} alt="" />
-                        <Tag>{ task.characteristics.map((tassk) => 
-                            <div>{tassk.name}</div>
+                { products.map((product: Product) => 
+                    <CoffeCard key={product.id}>
+                        <img src={product.image} alt="" />
+                        <Tag>{ product.characteristics.map((characteristic: characteristicProps) => 
+                            <div>{characteristic.name}</div>
                         )}</Tag>
                         <Informations>
-                            <Title>{task.name}</Title>
-                            <Description>{task.description}</Description>
+                            <Title>{product.name}</Title>
+                            <Description>{product.description}</Description>
                         </Informations>
                         <Payment>
-                            <Value><span>R$ </span>{task.value}</Value>
-                            <Amount><button disabled={isLoading} id={task.id} onClick={(e) => {teste2(e)}}>–</button> {task.amount} <button disabled={isLoading} id={task.id} onClick={(e) => {teste(e)}}>+</button></Amount>
-                            <ButtonCart id={task.id} onClick={(e) => {teste3(e)}} disabled={isLoading}><img id={task.id} src={shoppingCartImg} alt="" /></ButtonCart>
+                            <Value><span>R$ </span>{product.value}</Value>
+                            <Amount><button disabled={isLoading} id={product.id} onClick={(e) => {reduceQuantity(e)}}>–</button> {product.amount} <button disabled={isLoading} id={product.id} onClick={(e) => {increaseQuantity(e)}}>+</button></Amount>
+                            <ButtonCart id={product.id} onClick={(e) => {addToShoppingCart(e)}} disabled={isLoading}><img id={product.id} src={shoppingCartImg} alt="" /></ButtonCart>
                         </Payment>
                     </CoffeCard>
                     
