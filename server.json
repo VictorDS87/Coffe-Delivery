@@ -11,7 +11,7 @@
       "name": "Expresso Tradicional",
       "description": "O tradicional café feito com água quente e grãos moídos",
       "value": 9.99,
-      "amount": 16
+      "amount": 21
     },
     {
       "id": "2",
@@ -24,7 +24,7 @@
       "name": "Expresso Americano",
       "description": "Expresso diluifo, menos intenso que o tradicional",
       "value": 9.99,
-      "amount": 12
+      "amount": 15
     },
     {
       "id": "3",
@@ -53,7 +53,7 @@
       "name": "Expresso Gelado",
       "description": "Bebida preparada com café expresso e cubos de gelo",
       "value": 9.99,
-      "amount": 0
+      "amount": 2
     },
     {
       "id": "5",
