@@ -61,6 +61,10 @@ export function Products({ values }: ProductProps) {
         setIsLoading(true)
         // Buscar valor de amount 
         const response = await api.get('products/'+e.target.id) 
+        if(response.data.amount == 0) {
+            setIsLoading(false)
+            return
+        }
         const responseAmount = response.data.amount - 1
 
         // Alterar o valor no servidor
@@ -83,8 +87,9 @@ export function Products({ values }: ProductProps) {
             setShoppingCart((state) => [...state, {
                 id: response.data.id, 
                 image: response.data.image, 
-                name: response.data.name, value: 
-                response.data.value
+                name: response.data.name, 
+                value: response.data.value,
+                amount: response.data.amount,
             }])
             
         }else {
@@ -116,7 +121,7 @@ export function Products({ values }: ProductProps) {
                             <Description>{product.description}</Description>
                         </Informations>
                         <Payment>
-                            <Value><span>R$ </span>{product.value}</Value>
+                            <Value><span>R$ </span>{product.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</Value>
                             <Amount><button disabled={isLoading} id={product.id} onClick={(e) => {reduceQuantity(e)}}>–</button> {product.amount} <button disabled={isLoading} id={product.id} onClick={(e) => {increaseQuantity(e)}}>+</button></Amount>
                             <ButtonCart id={product.id} onClick={(e) => {addToShoppingCart(e)}} disabled={isLoading}><img id={product.id} src={shoppingCartImg} alt="" /></ButtonCart>
                         </Payment>
