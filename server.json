@@ -1,4 +1,42 @@
 {
+  "history": [
+    {
+      "cep": "cep",
+      "city": "cidade",
+      "complement": "complento",
+      "houseNumber": "numero",
+      "neighborhood": "bairro",
+      "street": "rua",
+      "uf": "uf",
+      "paymentMethod": "debitCard",
+      "id": 1
+    },
+    {
+      "cep": "cep",
+      "city": "cidade",
+      "complement": "complento",
+      "houseNumber": "numero",
+      "neighborhood": "bairro",
+      "street": "rua",
+      "uf": "uf",
+      "paymentMethod": "debitCard",
+      "id": 2
+    },
+    {
+      "id": 3
+    },
+    {
+      "cep": "",
+      "city": "",
+      "complement": "",
+      "houseNumber": "",
+      "neighborhood": "",
+      "street": "",
+      "uf": "",
+      "paymentMethod": "money",
+      "id": 4
+    }
+  ],
   "products": [
     {
       "id": "1",
@@ -11,7 +49,7 @@
       "name": "Expresso Tradicional",
       "description": "O tradicional café feito com água quente e grãos moídos",
       "value": 9.99,
-      "amount": 21
+      "amount": 2
     },
     {
       "id": "2",
@@ -24,7 +62,7 @@
       "name": "Expresso Americano",
       "description": "Expresso diluifo, menos intenso que o tradicional",
       "value": 9.99,
-      "amount": 15
+      "amount": 1
     },
     {
       "id": "3",
@@ -37,7 +75,7 @@
       "name": "Expresso Cremoso",
       "description": "Café expresso tradicional com espuma cremosa",
       "value": 9.99,
-      "amount": 3
+      "amount": 1
     },
     {
       "id": "4",
@@ -53,7 +91,7 @@
       "name": "Expresso Gelado",
       "description": "Bebida preparada com café expresso e cubos de gelo",
       "value": 9.99,
-      "amount": 2
+      "amount": 3
     },
     {
       "id": "5",
