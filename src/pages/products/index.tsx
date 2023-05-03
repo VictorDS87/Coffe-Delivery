@@ -24,6 +24,7 @@ interface ShppingCartProps {
     image: string
     name: string
     value: number 
+    amount: number
 }
 
 interface ProductProps {
@@ -61,7 +62,7 @@ export function Products({ values }: ProductProps) {
         setIsLoading(true)
         // Buscar valor de amount 
         const response = await api.get('products/'+e.target.id) 
-        if(response.data.amount == 0) {
+        if(response.data.amount <= 1) {
             setIsLoading(false)
             return
         }
@@ -80,8 +81,10 @@ export function Products({ values }: ProductProps) {
     }
 
     async function addToShoppingCart(e: any) {
+        setIsLoading(true)
         const response = await api.get('products/'+e.target.id) 
         
+        console.log(response.data.amount)
         const validationRepeatedItem = shoppingCart.filter(product => product.id === response.data.id)
         if(validationRepeatedItem.length == 0){
             setShoppingCart((state) => [...state, {
@@ -92,9 +95,25 @@ export function Products({ values }: ProductProps) {
                 amount: response.data.amount,
             }])
             
-        }else {
-            alert('Você já tem esse item salvo no carrinho, aumenta a quantidade ou remova ele do carrinho')
+        }else {   
+            if(validationRepeatedItem[0].amount !== response.data.amount) {
+                const updatedShoppingCart = shoppingCart.map(product => {
+                    if (product.id === response.data.id) {
+                      return {
+                        ...product, 
+                        amount: response.data.amount
+                      };
+                    }
+                    return product;
+                });
+                  
+                setShoppingCart(updatedShoppingCart);
+                console.log('passou')
+                return setIsLoading(false)
+            }
+            alert('Você já tem esse item salvo no carrinho, aumente a quantidade ou remova ele do carrinho na hora da finalização')
         }
+        setIsLoading(false)
     }
 
     useEffect(() => {
@@ -107,6 +126,7 @@ export function Products({ values }: ProductProps) {
     return (
         <div>
             <ProductPresentation />
+            <button type='button' onClick={(e) => {console.log(shoppingCart)}}></button>
             <Coffes>
                 <TitleSpan>Nossos cafés</TitleSpan>
                 <ContainerCoffeCard>
@@ -122,11 +142,14 @@ export function Products({ values }: ProductProps) {
                         </Informations>
                         <Payment>
                             <Value><span>R$ </span>{product.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</Value>
-                            <Amount><button disabled={isLoading} id={product.id} onClick={(e) => {reduceQuantity(e)}}>–</button> {product.amount} <button disabled={isLoading} id={product.id} onClick={(e) => {increaseQuantity(e)}}>+</button></Amount>
+                            <Amount>
+                                <button disabled={isLoading} id={product.id} onClick={(e) => {reduceQuantity(e)}}>–</button>
+                                 {product.amount} 
+                                 <button disabled={isLoading} id={product.id} onClick={(e) => {increaseQuantity(e)}}>+</button>
+                            </Amount>
                             <ButtonCart id={product.id} onClick={(e) => {addToShoppingCart(e)}} disabled={isLoading}><img id={product.id} src={shoppingCartImg} alt="" /></ButtonCart>
                         </Payment>
-                    </CoffeCard>
-                    
+                    </CoffeCard>                 
                 )}
                     
                 </ContainerCoffeCard>

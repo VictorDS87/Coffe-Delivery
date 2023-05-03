@@ -7,15 +7,18 @@ import { ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import locateImg from '../../assets/purchasePage/locate.svg'
 import cashImg from '../../assets/purchasePage/cash.svg'
 import { 
+  ButtonConfirmOrder,
   CEP, 
   City, 
   CoffeCard, 
+  CoffeImage, 
   Complement, 
   ContainerDeliveryInformation, 
   ContainerPaymentMethod, 
   ContainerPurchase, 
   ContainerSelectedProducts,
   DeliveryInformation, 
+  Frete, 
   Header, 
   HeaderDeliveryInformation, 
   HouseNumber, 
@@ -29,6 +32,7 @@ import {
   Neighborhood, 
   NeighborhoodCityUf, 
   PaymentMethod, 
+  PurchaseTotal, 
   Quantity, 
   Reduce, 
   Remove, 
@@ -38,9 +42,10 @@ import {
   Street, 
   Strong, 
   Title, 
+  TotalProducts, 
   Uf, 
   Value } from './styles';
-import { Bank, CreditCard, Money } from '@phosphor-icons/react';
+import { Bank, CreditCard, Minus, Money, Plus, Trash } from '@phosphor-icons/react';
 import { api } from '../../lib/axios';
 
 interface ShppingCartProps {
@@ -72,53 +77,59 @@ interface submitProps {
   paymentMethod: PaymentMethodProps
 }
 
-
 export function Purchase(shoppingCart: PurchaseProps) {  
     const [purchaseInformation, setPurchaseInformation] = useState<submitProps>()
     // setTestandoPatinho(shoppingCart)
+    const [ products, setProducts ] = useState<PurchaseProps>([])
 
-    let total = 0 
+    // .toLocaleString('pt-BR', { minimumFractionDigits: 2 }).toString()
+    let totalValue = shoppingCart.shoppingCart.reduce((acc, item) => acc + (item.value*item.amount), 0);
     const [patinho, setPatinho] = useState(false)
     const [patinho2, setPatinho2] = useState(false)
     const [patinho3, setPatinho3] = useState(false)
 
-    function handlePaymentMethod(e: any) {
+    function handlePaymentMethodCreditCard(e: any) {
         e.preventDefault();
         setPatinho(true)
         setPatinho2(false)
         setPatinho3(false)
     }
 
-    function handlePaymentMethod2(e: any) {
+    function handlePaymentMethodDebitCard(e: any) {
         e.preventDefault();
         setPatinho2(true)
         setPatinho(false)
         setPatinho3(false)
     }
 
-    function handlePaymentMethod3(e: any) {
+    function handlePaymentMethodMoney(e: any) {
         e.preventDefault();
         setPatinho3(true)
         setPatinho(false)
         setPatinho2(false)
+
+        console.log(shoppingCart)
+    }
+
+    function reduceQuantity(e: any) {
+        console.log(e.target.id)
     }
 
     function submitTeste(e: any) {
       e.preventDefault();
 
+      // Gravar o metodo de pagamento
       let testess = e.target.creditCard.value
       if(patinho == true){
         testess = e.target.creditCard.value
-        console.log(testess)
 
       }if (patinho2 == true) {
         testess = e.target.bank.value
-        console.log(testess)
 
       } else{
         testess = e.target.money.value
-        console.log(testess)
       }
+
       setPurchaseInformation({
         cep: e.target.cep.value,
         city: e.target.city.value,
@@ -131,12 +142,11 @@ export function Purchase(shoppingCart: PurchaseProps) {
       })
 
       api.post('history', purchaseInformation)
-      console.log(purchaseInformation)
     }
     
     useEffect(() => {
-        
-      }, [shoppingCart]);
+      setProducts(shoppingCart)
+      }, []);
   return (
     <ContainerPurchase onSubmit={(e) => {submitTeste(e)}}>
         <DeliveryInformation>
@@ -179,17 +189,17 @@ export function Purchase(shoppingCart: PurchaseProps) {
                 </Header>
                 <ContainerPaymentMethod>
 
-                    <PaymentMethod name='creditCard' value='creditCard' onClick={(e) =>{handlePaymentMethod(e)}} disabled={patinho}>
+                    <PaymentMethod name='creditCard' value='creditCard' onClick={(e) =>{handlePaymentMethodCreditCard(e)}} disabled={patinho}>
                         <CreditCard color='#8047F8' size={32} />
                         <p>CARTÃO DE CRÉDITO</p>
                     </PaymentMethod>
 
-                    <PaymentMethod name='debitCard' value='debitCard' onClick={(e) =>{handlePaymentMethod2(e)}} disabled={patinho2}>
+                    <PaymentMethod name='debitCard' value='debitCard' onClick={(e) =>{handlePaymentMethodDebitCard(e)}} disabled={patinho2}>
                         <Bank color='#8047F8' size={32} />
                         <p>CARTÃO DE DÉBITO</p>
                     </PaymentMethod>
                     
-                    <PaymentMethod name='money' value='money' onClick={(e) =>{handlePaymentMethod3(e)}} disabled={patinho3}>
+                    <PaymentMethod name='money' value='money' onClick={(e) =>{handlePaymentMethodMoney(e)}} disabled={patinho3}>
                         <Money color='#8047F8' size={32} /> 
                         <p>DINHEIRO</p>
                     </PaymentMethod>
@@ -199,36 +209,62 @@ export function Purchase(shoppingCart: PurchaseProps) {
             </ContainerDeliveryInformation>
 
         </DeliveryInformation>
+
         <SelectedProducts>
             <Title>Cafés selecionados</Title>
             <ContainerSelectedProducts>
-               
-            { shoppingCart.shoppingCart.map((coffee: ShppingCartProps) => {
-              return (
-                <CoffeCard>
-                  <img src={coffee.image} alt={coffee.name} />
-                  <InformationsCoffeSelected>
-                    <NameAndValue>
-                      <Name> {coffee.name} </Name>
-                      <Value>R$ {coffee.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</Value>
-                    </NameAndValue>
-
-                    <IncreaseReduceAndRemove>
-                      <Quantity><Reduce>-</Reduce> {coffee.amount} <Increase>+</Increase></Quantity>
-                    </IncreaseReduceAndRemove>
-                  </InformationsCoffeSelected>
-                  <Separator>---------</Separator>
-                </CoffeCard>
-              )            
-            })}
-            <div>
+              {(shoppingCart.shoppingCart).length > 0 ? 
+                shoppingCart.shoppingCart.map((coffee: ShppingCartProps) => {
+                  return (
+                    <div key={coffee.id}>
+                      <CoffeCard>
+  
+                        <CoffeImage src={coffee.image} alt={coffee.name} />
+                        <InformationsCoffeSelected>
+                          <NameAndValue>
+                              <Name> {coffee.name} </Name>       
+                              <Value>R$ {coffee.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</Value>   
+                          </NameAndValue>
+  
+                          <IncreaseReduceAndRemove>
+                            <Quantity>
+                              <Reduce id={coffee.id} type='reset' onClick={(e) => { reduceQuantity(e) }}>
+                                  <p><Minus id={coffee.id} color='#8047F8'/></p>
+                              </Reduce> 
+                              {coffee.amount} 
+                              <Increase id={coffee.id} type='reset' >
+                                <Plus id={coffee.id} color='#8047F8'/>
+                              </Increase>
+                            </Quantity>
+                            <Remove id={coffee.id} type='reset' >
+                              <Trash id={coffee.id} size={18}/>
+                              Remover
+                            </Remove>
+                          </IncreaseReduceAndRemove>
+                        </InformationsCoffeSelected>
+                      </CoffeCard>
+                      <Separator></Separator>
+                    </div>
+                  )            
+                })
+              
+              : <div>Nenhum café selecionado...</div>}
+              
               <div>
-                <p>Total de itens</p> {(total + shoppingCart.shoppingCart.reduce((acc, item) => acc + (item.value*item.amount), 0)).toLocaleString('pt-BR', { minimumFractionDigits: 2 }).toString()}</div>
-              <div>Entrega</div>
-              <div>Total</div>
-            </div>
-                
-            <button>sdss</button>
+                <TotalProducts>
+                  <p>Total de itens</p>
+                  <span>R$ {totalValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                </TotalProducts>
+                <Frete>
+                  <p>Entrega</p>
+                  <span>R$ 3,50</span>
+                </Frete>
+                <PurchaseTotal>
+                  <strong>Total</strong>
+                  <strong>R$ {(totalValue + 3.5).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</strong>     
+                </PurchaseTotal>
+              </div>
+              <ButtonConfirmOrder>Confirmar Pedido</ButtonConfirmOrder>
             </ContainerSelectedProducts>
         </SelectedProducts>
     </ContainerPurchase>

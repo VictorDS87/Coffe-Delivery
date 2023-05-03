@@ -158,34 +158,152 @@ export const ContainerPaymentMethod= styled.div`
 // Card from Coffes Selected  
 
 export const CoffeCard = styled.div`
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+
+`
+
+export const CoffeImage = styled.img`
+    width: 70px;
 `
 
 export const InformationsCoffeSelected = styled.div`
+    width: 295px;
+
 `
 
 export const NameAndValue = styled.div`
+    display: flex;
+    justify-content: space-between;
+
+    color: #403937;
 `
 
 export const Name = styled.p`
+font-weight: 400;
 `
 
 export const Value = styled.p`
 `
 
 export const IncreaseReduceAndRemove = styled.div`
+    display: flex;
+    gap: 1rem;
 `
 
 export const Quantity  = styled.div`
+    display: flex;
+    gap: 0.3rem;
+    align-items: center;
+    height: 34px;
+    
+    border-radius: 6px;
+    background: #E6E5E5;
+    color: #272221;
 `
 
 export const Reduce = styled.button`
+    background-color: transparent;
+    border: 0;
+
+    cursor: pointer;
 `
 
 export const Increase = styled.button`
+    background-color: transparent;
+    border: 0;
+
+    cursor: pointer;
+    color: red;
 `
 
 export const Remove = styled.button`
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
+    
+    border-radius: 6px;
+    border: 0;
+
+    background: #E6E5E5;
+
+    cursor: pointer;
+    transition: .4s;
+
+    svg {
+        color: #8047F8
+    }
+    &:hover {
+        color: rgb(241 140 140);
+
+        svg {
+            color: rgb(251 140 140)
+        }
+    }
 `
 
 export const Separator = styled.div`
+    content: "";
+    margin-top: 1rem;
+    background: #DEDEDE;
+    
+    padding: 0.0000001px;
+    height: 1px;
+    width: 386px;
+`
+
+export const TotalProducts = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-top: 1rem;
+
+    color: #574F4D;
+`
+
+export const Frete = styled.div`
+    margin-top: -1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    color: #574F4D;
+`
+
+export const PurchaseTotal = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    
+    color: #403937;
+    strong {
+        font-family: 'Roboto', 'sans-serif';
+        font-weight: 700;
+        font-size: 20px;
+    }
+`
+
+export const ButtonConfirmOrder = styled.button`
+    width: 100%;
+    margin-top: 36px;
+    padding: 12px 8px;
+
+    border: none;
+    border-radius: 6px;
+    background-color: #DBAC2C;
+
+    font-family: 'Roboto', 'sans-serif';
+    font-weight: 700;
+    font-size: 14px;
+
+    color: #FFFFFF;
+
+    cursor: pointer;
+    transition: .4s;
+    &:hover{
+        filter: brightness(0.8);
+        color: antiquewhite;
+    }
 `
