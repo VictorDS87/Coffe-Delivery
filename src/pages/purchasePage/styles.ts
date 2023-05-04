@@ -10,22 +10,6 @@ export const Title = styled.h2`
     font-family: 'Baloo 2', 'sans-serif';
     font-size: 20px;
 `
-
-export const SelectedProducts = styled.div`
-    width: 40%;
-`
-
-export const ContainerSelectedProducts = styled.div`
-    padding: 2rem;
-    background-color: #F3F2F2;
-
-    border-top-right-radius: 30px;
-    border-top-left-radius: 5px;
-    border-bottom-left-radius: 30px;
-    border-bottom-right-radius: 5px;
-`
-
-
 export const DeliveryInformation = styled.div`
     width: 55%;
     margin-right: 3.5rem;
@@ -157,6 +141,26 @@ export const ContainerPaymentMethod= styled.div`
 
 // Card from Coffes Selected  
 
+export const SelectedProducts = styled.div`
+    width: 40%;
+`
+
+export const ContainerSelectedProducts = styled.div`
+    padding: 2rem;
+    background-color: #F3F2F2;
+
+    border-top-right-radius: 30px;
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 5px;
+`
+
+export const CoffesSelected = styled.div`
+    width: 410px;
+    max-height: 400px;
+    overflow-y: auto;
+`
+
 export const CoffeCard = styled.div`
     display: flex;
     align-items: flex-end;
@@ -176,6 +180,7 @@ export const InformationsCoffeSelected = styled.div`
 export const NameAndValue = styled.div`
     display: flex;
     justify-content: space-between;
+    margin-right: 1rem;
 
     color: #403937;
 `
