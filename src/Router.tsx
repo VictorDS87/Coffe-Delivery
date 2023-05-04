@@ -3,6 +3,7 @@ import { Products } from './pages/products'
 import { useEffect, useState } from 'react'
 import { Header } from './pages/header'
 import { Purchase } from './pages/purchasePage'
+import { SucessPage } from './pages/SucessPage'
 
 interface ShppingCartProps {
     id: string
@@ -28,6 +29,7 @@ export function Router() {
             <Routes>     
                 <Route path="/" element={<Products values={shoppingCartList}/>} />
                 <Route path="/purchase" element={<Purchase  shoppingCart={shoppingCart}/>} />
+                <Route path="/purchase/sucesspage" element={<SucessPage />} />
             </Routes>
         </>
     )
