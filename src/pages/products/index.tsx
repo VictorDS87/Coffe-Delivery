@@ -84,7 +84,6 @@ export function Products({ values }: ProductProps) {
         setIsLoading(true)
         const response = await api.get('products/'+e.target.id) 
         
-        console.log(response.data.amount)
         const validationRepeatedItem = shoppingCart.filter(product => product.id === response.data.id)
         if(validationRepeatedItem.length == 0){
             setShoppingCart((state) => [...state, {
@@ -108,7 +107,6 @@ export function Products({ values }: ProductProps) {
                 });
                   
                 setShoppingCart(updatedShoppingCart);
-                console.log('passou')
                 return setIsLoading(false)
             }
             alert('Você já tem esse item salvo no carrinho, aumente a quantidade ou remova ele do carrinho na hora da finalização')
@@ -126,7 +124,6 @@ export function Products({ values }: ProductProps) {
     return (
         <div>
             <ProductPresentation />
-            <button type='button' onClick={(e) => {console.log(shoppingCart)}}></button>
             <Coffes>
                 <TitleSpan>Nossos cafés</TitleSpan>
                 <ContainerCoffeCard>
