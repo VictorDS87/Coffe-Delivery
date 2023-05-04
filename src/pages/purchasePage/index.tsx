@@ -12,6 +12,7 @@ import {
   City, 
   CoffeCard, 
   CoffeImage, 
+  CoffesSelected, 
   Complement, 
   ContainerDeliveryInformation, 
   ContainerPaymentMethod, 
@@ -47,6 +48,7 @@ import {
   Value } from './styles';
 import { Bank, CreditCard, Minus, Money, Plus, Trash } from '@phosphor-icons/react';
 import { api } from '../../lib/axios';
+import { NavLink } from 'react-router-dom';
 
 interface ShppingCartProps {
     id: string
@@ -62,8 +64,12 @@ interface PurchaseProps {
 
 enum PaymentMethodProps {
   eteste1 = 'creditCard',
-  eteste2 = 'debitCard',
+  eteste2 = 'debitcardMethod',
   eteste3 = 'money'
+}
+
+interface IdProduct {
+  id: string
 }
 
 interface submitProps {
@@ -79,55 +85,134 @@ interface submitProps {
 
 export function Purchase(shoppingCart: PurchaseProps) {  
     const [purchaseInformation, setPurchaseInformation] = useState<submitProps>()
-    // setTestandoPatinho(shoppingCart)
-    const [ products, setProducts ] = useState<PurchaseProps>([])
+    const [ products, setProducts ] = useState([shoppingCart])
 
-    // .toLocaleString('pt-BR', { minimumFractionDigits: 2 }).toString()
+    const [ productsAtt, setproductsAtt ] = useState<ShppingCartProps[]>([])
+
     let totalValue = shoppingCart.shoppingCart.reduce((acc, item) => acc + (item.value*item.amount), 0);
-    const [patinho, setPatinho] = useState(false)
-    const [patinho2, setPatinho2] = useState(false)
-    const [patinho3, setPatinho3] = useState(false)
+    let totalValueAtt = productsAtt.reduce((acc, item) => acc + (item.value*item.amount), 0);
+
+    const [mainValueAlreadyRendered, setMainValueAlreadyRendered] = useState<boolean>(true) 
+    const [creditCard, setCreditCard] = useState(false)
+    const [debitcardMethod, setDebitcardMethod] = useState(false)
+    const [money, setMoney] = useState(false)
 
     function handlePaymentMethodCreditCard(e: any) {
         e.preventDefault();
-        setPatinho(true)
-        setPatinho2(false)
-        setPatinho3(false)
+        setCreditCard(true)
+        setDebitcardMethod(false)
+        setMoney(false)
     }
 
-    function handlePaymentMethodDebitCard(e: any) {
+    function handlePaymentMethodDebitcardMethod(e: any) {
         e.preventDefault();
-        setPatinho2(true)
-        setPatinho(false)
-        setPatinho3(false)
+        setDebitcardMethod(true)
+        setCreditCard(false)
+        setMoney(false)
     }
 
     function handlePaymentMethodMoney(e: any) {
         e.preventDefault();
-        setPatinho3(true)
-        setPatinho(false)
-        setPatinho2(false)
+        setMoney(true)
+        setCreditCard(false)
+        setDebitcardMethod(false)
 
         console.log(shoppingCart)
     }
 
     function reduceQuantity(e: any) {
-        console.log(e.target.id)
+
+        if(productsAtt.length == 0) {
+          const updatedShoppingCart = products[0].shoppingCart.map(product => {
+            if(product.amount > 1) {
+              if (product.id === e.id) {
+                return {
+                  ...product, 
+                  amount: product.amount - 1
+                };
+              }
+              return product; 
+            }else {
+              return product
+            }
+          });  
+          setproductsAtt(updatedShoppingCart)        
+
+        } else{
+          const updatedShoppingCart = productsAtt.map(product => {
+            if(product.amount > 1) {
+              if (product.id === e.id) {
+                return {
+                  ...product, 
+                  amount: product.amount - 1
+                };
+              }
+              return product;
+            }else {
+              return product
+            }
+          });    
+          setproductsAtt(updatedShoppingCart)
+        }   
+    }
+
+    function increaseQuantity(e: any) {
+        if(productsAtt.length == 0) {
+          const updatedShoppingCart = products[0].shoppingCart.map(product => {
+  
+              if (product.id === e.id) {
+                return {
+                  ...product, 
+                  amount: product.amount + 1
+                };
+              }
+              return product; 
+      
+          });  
+          setproductsAtt(updatedShoppingCart)        
+
+        } else{
+          const updatedShoppingCart = productsAtt.map(product => {     
+              if (product.id === e.id) {
+                return {
+                  ...product, 
+                  amount: product.amount + 1
+                };
+              }
+              return product;
+           
+          });    
+          setproductsAtt(updatedShoppingCart)
+        }   
+    }
+
+    function removeProduct(e: any) {
+        if(productsAtt.length == 0) {
+          setproductsAtt(products[0].shoppingCart.filter(item => item.id !== e.id))
+        }else {
+          setproductsAtt(productsAtt.filter(item => item.id !== e.id))
+
+        }
+        console.log(productsAtt)
+        if(productsAtt.length-1 == 0) {
+          setMainValueAlreadyRendered(false)
+        } 
+  
     }
 
     function submitTeste(e: any) {
       e.preventDefault();
 
       // Gravar o metodo de pagamento
-      let testess = e.target.creditCard.value
-      if(patinho == true){
-        testess = e.target.creditCard.value
+      let paymentMethodSelected = e.target.creditCard.value
+      if(creditCard == true){
+        paymentMethodSelected = e.target.creditCard.value
 
-      }if (patinho2 == true) {
-        testess = e.target.bank.value
+      }if (debitcardMethod == true) {
+        paymentMethodSelected = e.target.debitcardMethod.value
 
       } else{
-        testess = e.target.money.value
+        paymentMethodSelected = e.target.money.value
       }
 
       setPurchaseInformation({
@@ -138,20 +223,19 @@ export function Purchase(shoppingCart: PurchaseProps) {
         neighborhood: e.target.neighborhood.value,
         street: e.target.street.value,
         uf: e.target.uf.value,
-        paymentMethod: testess
+        paymentMethod: paymentMethodSelected
       })
 
       api.post('history', purchaseInformation)
     }
-    
     useEffect(() => {
-      setProducts(shoppingCart)
-      }, []);
+
+      }, [products]);
   return (
     <ContainerPurchase onSubmit={(e) => {submitTeste(e)}}>
+ 
         <DeliveryInformation>
-            <Title>Complete seu pedido</Title> 
-            
+            <Title>Complete seu pedido</Title>
             <ContainerDeliveryInformation>
                 <Header>
                     <img src={locateImg} alt="" />
@@ -167,7 +251,7 @@ export function Purchase(shoppingCart: PurchaseProps) {
                 
                     <HouseNumberAndComplement>
                         <HouseNumber name='houseNumber' type="text" placeholder='Número' />
-                        <Complement  name='complement' type="text" placeholder='Complemento                                                Opcional' />
+                        <Complement  name='complement' type="text" placeholder='Complemento                                           Opcional' />
                     </HouseNumberAndComplement>
                     
                     <NeighborhoodCityUf>
@@ -189,17 +273,17 @@ export function Purchase(shoppingCart: PurchaseProps) {
                 </Header>
                 <ContainerPaymentMethod>
 
-                    <PaymentMethod name='creditCard' value='creditCard' onClick={(e) =>{handlePaymentMethodCreditCard(e)}} disabled={patinho}>
+                    <PaymentMethod name='creditCard' value='creditCard' onClick={(e) =>{handlePaymentMethodCreditCard(e)}} disabled={creditCard}>
                         <CreditCard color='#8047F8' size={32} />
                         <p>CARTÃO DE CRÉDITO</p>
                     </PaymentMethod>
 
-                    <PaymentMethod name='debitCard' value='debitCard' onClick={(e) =>{handlePaymentMethodDebitCard(e)}} disabled={patinho2}>
+                    <PaymentMethod name='debitcardMethod' value='debitcardMethod' onClick={(e) =>{handlePaymentMethodDebitcardMethod(e)}} disabled={debitcardMethod}>
                         <Bank color='#8047F8' size={32} />
                         <p>CARTÃO DE DÉBITO</p>
                     </PaymentMethod>
                     
-                    <PaymentMethod name='money' value='money' onClick={(e) =>{handlePaymentMethodMoney(e)}} disabled={patinho3}>
+                    <PaymentMethod name='money' value='money' onClick={(e) =>{handlePaymentMethodMoney(e)}} disabled={money}>
                         <Money color='#8047F8' size={32} /> 
                         <p>DINHEIRO</p>
                     </PaymentMethod>
@@ -213,139 +297,122 @@ export function Purchase(shoppingCart: PurchaseProps) {
         <SelectedProducts>
             <Title>Cafés selecionados</Title>
             <ContainerSelectedProducts>
-              {(shoppingCart.shoppingCart).length > 0 ? 
-                shoppingCart.shoppingCart.map((coffee: ShppingCartProps) => {
-                  return (
-                    <div key={coffee.id}>
-                      <CoffeCard>
-  
-                        <CoffeImage src={coffee.image} alt={coffee.name} />
-                        <InformationsCoffeSelected>
-                          <NameAndValue>
-                              <Name> {coffee.name} </Name>       
-                              <Value>R$ {coffee.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</Value>   
-                          </NameAndValue>
-  
-                          <IncreaseReduceAndRemove>
-                            <Quantity>
-                              <Reduce id={coffee.id} type='reset' onClick={(e) => { reduceQuantity(e) }}>
-                                  <p><Minus id={coffee.id} color='#8047F8'/></p>
-                              </Reduce> 
-                              {coffee.amount} 
-                              <Increase id={coffee.id} type='reset' >
-                                <Plus id={coffee.id} color='#8047F8'/>
-                              </Increase>
-                            </Quantity>
-                            <Remove id={coffee.id} type='reset' >
-                              <Trash id={coffee.id} size={18}/>
-                              Remover
-                            </Remove>
-                          </IncreaseReduceAndRemove>
-                        </InformationsCoffeSelected>
-                      </CoffeCard>
-                      <Separator></Separator>
+              <CoffesSelected>
+                {/* Dois IF, o primeiro verifica se existe algum valor para ser lido, o segundo mostra */}
+                {/* o valor correto, sendo o primeiro o passado pelo componente, o segundo é o valor alterado */}
+                {((shoppingCart.shoppingCart).length > 0 || productsAtt.length > 0) && mainValueAlreadyRendered ?
+
+                    (shoppingCart.shoppingCart).length > 0 && productsAtt.length == 0 ? 
+                      products[0].shoppingCart.map((coffee: ShppingCartProps) => {
+                        return (
+                          <div key={coffee.id}>
+                            <CoffeCard>
+        
+                              <CoffeImage src={coffee.image} alt={coffee.name} />
+                              <InformationsCoffeSelected>
+                                <NameAndValue>
+                                    <Name> {coffee.name} </Name>       
+                                    <Value>R$ {coffee.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</Value>   
+                                </NameAndValue>
+        
+                                <IncreaseReduceAndRemove>
+                                  <Quantity>
+                                    <Reduce id={coffee.id} type='reset' onClick={(e) => { reduceQuantity(e.target) }}>
+                                        <p><Minus id={coffee.id} color='#8047F8'/></p>
+                                    </Reduce> 
+                                    {coffee.amount} 
+                                    <Increase id={coffee.id} type='reset' onClick={(e) => { increaseQuantity(e.target)}}>
+                                      <Plus id={coffee.id} color='#8047F8'/>
+                                    </Increase>
+                                  </Quantity>
+                                  <Remove id={coffee.id} type='reset' onClick={(e) => { removeProduct(e.target) }}>
+                                    <Trash id={coffee.id} size={18}/>
+                                    Remover
+                                  </Remove>
+                                </IncreaseReduceAndRemove>
+                              </InformationsCoffeSelected>
+                            </CoffeCard>
+                            <Separator></Separator>
+                          </div>
+                        )            
+                      })
+                    
+                    : <div>{productsAtt.map((coffee) => {
+                      return (
+                        <div key={coffee.id}>
+                            <CoffeCard>
+        
+                              <CoffeImage src={coffee.image} alt={coffee.name} />
+                              <InformationsCoffeSelected>
+                                <NameAndValue>
+                                    <Name> {coffee.name} </Name>       
+                                    <Value>R$ {coffee.value.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</Value>   
+                                </NameAndValue>
+        
+                                <IncreaseReduceAndRemove>
+                                  <Quantity>
+                                    <Reduce id={coffee.id} type='reset' onClick={(e) => { reduceQuantity(e.target) }}>
+                                        <p><Minus id={coffee.id} color='#8047F8'/></p>
+                                    </Reduce> 
+                                    {coffee.amount} 
+                                    <Increase id={coffee.id} type='reset' onClick={(e) => { increaseQuantity(e.target)}} >
+                                      <Plus id={coffee.id} color='#8047F8'/>
+                                    </Increase>
+                                  </Quantity>
+                                  <Remove id={coffee.id} type='reset' onClick={(e) => { removeProduct(e.target) }}>
+                                    <Trash id={coffee.id} size={18}/>
+                                    Remover
+                                  </Remove>
+                                </IncreaseReduceAndRemove>
+                              </InformationsCoffeSelected>
+                            </CoffeCard>
+                            <Separator></Separator>
+                          </div>
+                      )
+                    })}</div>  
+
+                : <div>Nenhum café selecionado...</div>
+                }
+              </CoffesSelected>
+              
+              {((shoppingCart.shoppingCart).length > 0 || productsAtt.length > 0) && mainValueAlreadyRendered ?
+
+                  (shoppingCart.shoppingCart).length > 0 && productsAtt.length == 0 ?
+                    <div>
+                      <TotalProducts>
+                        <p>Total de itens</p>
+                        <span>R$ {totalValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                      </TotalProducts>
+                      <Frete>
+                        <p>Entrega</p>
+                        <span>R$ 3,50</span>
+                      </Frete>
+                      <PurchaseTotal>
+                        <strong>Total</strong>
+                        <strong>R$ {(totalValue + 3.5).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</strong>     
+                      </PurchaseTotal>
                     </div>
-                  )            
-                })
-              
-              : <div>Nenhum café selecionado...</div>}
-              
-              <div>
-                <TotalProducts>
-                  <p>Total de itens</p>
-                  <span>R$ {totalValue.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
-                </TotalProducts>
-                <Frete>
-                  <p>Entrega</p>
-                  <span>R$ 3,50</span>
-                </Frete>
-                <PurchaseTotal>
-                  <strong>Total</strong>
-                  <strong>R$ {(totalValue + 3.5).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</strong>     
-                </PurchaseTotal>
-              </div>
-              <ButtonConfirmOrder>Confirmar Pedido</ButtonConfirmOrder>
+
+                    : <div>
+                        <TotalProducts>
+                          <p>Total de itens</p>
+                          <span>R$ {totalValueAtt.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</span>
+                        </TotalProducts>
+                        <Frete>
+                          <p>Entrega</p>
+                          <span>R$ 3,50</span>
+                        </Frete>
+                        <PurchaseTotal>
+                          <strong>Total</strong>
+                          <strong>R$ {(totalValueAtt + 3.5).toLocaleString('pt-BR', { minimumFractionDigits: 2 })}</strong>     
+                        </PurchaseTotal>
+                      </div> 
+                : <div></div>
+
+              }
+              <NavLink to="sucesspage"><ButtonConfirmOrder>Confirmar Pedido</ButtonConfirmOrder></NavLink>
             </ContainerSelectedProducts>
         </SelectedProducts>
     </ContainerPurchase>
   )
 }
-
-
-
-{/* <div>
-<a
-data-tooltip-id="my-tooltip"
-            data-tooltip-content="Click me!"
-            // onMouseEnter={() => setIsOpen(true)}
-            onClick={() => setIsOpen(true)}
-            >
-            ◕‿‿◕
-            </a>
-            <Tooltip
-            id="my-tooltip"
-            content="Hello world!"
-            isOpen={isOpen}
-            />
-    </div> */}
-
-
-{/* <Box sx={{ width: 200 }}>
-      <FormLabel
-        id="storage-label"
-        sx={{
-          mb: 2,
-          fontWeight: 'xl',
-          textTransform: 'uppercase',
-          fontSize: 'xs',
-          letterSpacing: '0.15rem',
-        }}
-      >
-        Storage
-      </FormLabel>
-      <RadioGroup
-        aria-labelledby="storage-label"
-        defaultValue="512GB"
-        size="lg"
-        sx={{ gap: 1.5 }}
-      >
-        {['512GB', '1TB', '2TB'].map((value) => (
-          <Sheet
-            key={value}
-            sx={{
-              p: 2,
-              borderRadius: 'md',
-              boxShadow: 'sm',
-              bgcolor: 'background.body',
-            }}
-          >
-            <Radio
-              label={`${value} SSD storage`}
-              overlay
-              disableIcon
-              value={value}
-              slotProps={{
-                label: ({ checked }) => ({
-                  sx: {
-                    fontWeight: 'lg',
-                    fontSize: 'md',
-                    color: checked ? 'text.primary' : 'text.secondary',
-                  },
-                }),
-                action: ({ checked }) => ({
-                  sx: (theme) => ({
-                    ...(checked && {
-                      '--variant-borderWidth': '2px',
-                      '&&': {
-                        // && to increase the specificity to win the base :hover styles
-                        borderColor: theme.vars.palette.primary[500],
-                      },
-                    }),
-                  }),
-                }),
-              }}
-            />
-          </Sheet>
-        ))}
-      </RadioGroup>
-    </Box> */}
