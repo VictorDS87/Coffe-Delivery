@@ -2,8 +2,8 @@ import testeImg from './imageTeste.svg'
 import shoppingCartImg from '../../assets/products/shoppingCart.svg'
 import { ProductPresentation } from "./productPresentation"
 import { Amount, ButtonCart, CoffeCard, Coffes, ContainerCoffeCard, Description, Informations, Payment, Tag, Title, TitleSpan, Value, } from "./styles"
-import { api } from '../../lib/axios'
 import { useEffect, useState } from 'react'
+import axios from 'axios'
 
 interface Product {
     id: string
@@ -36,18 +36,18 @@ export function Products({ values }: ProductProps) {
     const [shoppingCart, setShoppingCart] = useState<ShppingCartProps[]>([])
 
     async function fetchProducts() {
-        let response = await api.get('products')
+        let response = await axios.get('https://coffe-delivery-serverdb.vercel.app/products')
         setProducts(response.data)
     }
 
     async function increaseQuantity(e:any) {
         setIsLoading(true)
         // Buscar valor de amount  e alterar quantidade
-        const response = await api.get('products/'+e.target.id) 
+        const response = await axios.get('https://coffe-delivery-serverdb.vercel.app/products/'+e.target.id) 
         const responseAmount = response.data.amount + 1
 
         // Alterar o valor no servidor
-        await api.patch('products/'+e.target.id, { amount: responseAmount })
+        await axios.patch('products/'+e.target.id, { amount: responseAmount })
 
         // Atualizar o valor no useState
         const tempProducts = [...products];
@@ -61,7 +61,7 @@ export function Products({ values }: ProductProps) {
     async function reduceQuantity(e:any) {
         setIsLoading(true)
         // Buscar valor de amount 
-        const response = await api.get('products/'+e.target.id) 
+        const response = await axios.get('https://coffe-delivery-serverdb.vercel.app/products/'+e.target.id) 
         if(response.data.amount <= 1) {
             setIsLoading(false)
             return
@@ -69,7 +69,7 @@ export function Products({ values }: ProductProps) {
         const responseAmount = response.data.amount - 1
 
         // Alterar o valor no servidor
-        await api.patch('products/'+e.target.id, { amount: responseAmount })
+        await axios.patch('https://coffe-delivery-serverdb.vercel.app/products/'+e.target.id, { amount: responseAmount })
 
         // Atualizar o valor no useState
         const tempProducts = [...products];
@@ -82,7 +82,7 @@ export function Products({ values }: ProductProps) {
 
     async function addToShoppingCart(e: any) {
         setIsLoading(true)
-        const response = await api.get('products/'+e.target.id) 
+        const response = await axios.get('https://coffe-delivery-serverdb.vercel.app/products/'+e.target.id) 
         
         const validationRepeatedItem = shoppingCart.filter(product => product.id === response.data.id)
         if(validationRepeatedItem.length == 0){
