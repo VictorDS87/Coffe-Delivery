@@ -42,9 +42,25 @@ export function Products({ values }: ProductProps) {
 
     async function increaseQuantity(e:any) {
         setIsLoading(true)
+
         // Buscar valor de amount  e alterar quantidade
         const response = await api.get('products/'+e.target.id) 
         const responseAmount = response.data.amount + 1
+        
+        // Alterar a quantidade de cafés caso o item já esteja no carrinho
+        if(shoppingCart.filter(item => item.id === e.target.id).length == 1) {
+            const updatedShoppingCart = shoppingCart.map(product => {
+                if (product.id === e.target.id) {
+                  return {
+                    ...product, 
+                    amount: product.amount + 1
+                  };
+                }
+                return product; 
+        
+            });  
+            setShoppingCart(updatedShoppingCart)
+        }    
 
         // Alterar o valor no servidor
         await api.patch('products/'+e.target.id, { amount: responseAmount })
@@ -67,6 +83,21 @@ export function Products({ values }: ProductProps) {
             return
         }
         const responseAmount = response.data.amount - 1
+
+        // Alterar a quantidade de cafés caso o item já esteja no carrinho
+        if(shoppingCart.filter(item => item.id === e.target.id).length == 1) {
+            const updatedShoppingCart = shoppingCart.map(product => {
+                if (product.id === e.target.id) {
+                  return {
+                    ...product, 
+                    amount: product.amount - 1
+                  };
+                }
+                return product; 
+        
+            });  
+            setShoppingCart(updatedShoppingCart)
+        }    
 
         // Alterar o valor no servidor
         await api.patch('products/'+e.target.id, { amount: responseAmount })
