@@ -27,6 +27,8 @@ export function SucessPage() {
     useEffect(() => {
         const fetchData = async () => {
             const response = await api.get('history');
+
+            //Pegar o ultimo valor adicionado no history --- Se fosse um site com mais acessos eu teria feito a busca via ID do produto + ID do usuario
             setInfoDelivery(response.data[(response.data.length - 1)]);
         };
         fetchData();
