@@ -13,6 +13,9 @@ O design inclui os seguintes recursos:
 
 ## Design
 
+<img src="./public/coffe-delivery-home.png" alt="">
+<img src="./public/coffe-delivery-info.png" alt="">
+
 O design utiliza um esquema de cores marrom e branco para refletir o tema do café. A tipografia é simples e fácil de ler, com uma mistura de fontes serifadas e sem serifas usadas em todas as páginas.
 
 A página inicial apresenta uma imagem de destaque de uma xícara de café e um botão de chamada para ação convidando os usuários a pedir café. A página do menu exibe uma grade de itens de café com seus preços e uma breve descrição. Os usuários podem adicionar itens ao carrinho diretamente desta página.
