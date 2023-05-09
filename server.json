@@ -1,42 +1,4 @@
 {
-  "history": [
-    {
-      "cep": "cep",
-      "city": "cidade",
-      "complement": "complento",
-      "houseNumber": "numero",
-      "neighborhood": "bairro",
-      "street": "rua",
-      "uf": "uf",
-      "paymentMethod": "debitCard",
-      "id": 1
-    },
-    {
-      "cep": "cep",
-      "city": "cidade",
-      "complement": "complento",
-      "houseNumber": "numero",
-      "neighborhood": "bairro",
-      "street": "rua",
-      "uf": "uf",
-      "paymentMethod": "debitCard",
-      "id": 2
-    },
-    {
-      "id": 3
-    },
-    {
-      "cep": "",
-      "city": "",
-      "complement": "",
-      "houseNumber": "",
-      "neighborhood": "",
-      "street": "",
-      "uf": "",
-      "paymentMethod": "money",
-      "id": 4
-    }
-  ],
   "products": [
     {
       "id": "1",
@@ -49,7 +11,7 @@
       "name": "Expresso Tradicional",
       "description": "O tradicional café feito com água quente e grãos moídos",
       "value": 9.99,
-      "amount": 2
+      "amount": 6
     },
     {
       "id": "2",
@@ -62,7 +24,7 @@
       "name": "Expresso Americano",
       "description": "Expresso diluifo, menos intenso que o tradicional",
       "value": 9.99,
-      "amount": 1
+      "amount": 4
     },
     {
       "id": "3",
@@ -75,7 +37,7 @@
       "name": "Expresso Cremoso",
       "description": "Café expresso tradicional com espuma cremosa",
       "value": 9.99,
-      "amount": 1
+      "amount": 3
     },
     {
       "id": "4",
@@ -139,7 +101,7 @@
       "name": "Capuccino",
       "description": "Bebida com canela feita de doses iguais de café, leite e espuma",
       "value": 9.99,
-      "amount": 0
+      "amount": 1
     },
     {
       "id": "8",
@@ -250,5 +212,8 @@
       "value": 9.99,
       "amount": 1
     }
+  ],
+  "history": [
+    
   ]
 }
