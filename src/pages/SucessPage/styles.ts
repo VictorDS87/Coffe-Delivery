@@ -31,13 +31,15 @@ export const SummaryContainer = styled.div`
     border: 1px solid transparent;
     border-radius: 6px 36px;
 
+    
     background: 
-        linear-gradient(to right, white, #FAFAFA), 
-        linear-gradient(to right, #DBAC2C, #8047F8); 
+    linear-gradient(to right, white, #FAFAFA), 
+    linear-gradient(to right, #DBAC2C, #8047F8); 
     background-clip: padding-box, border-box;
     background-origin: padding-box, border-box;
-
+    
     width: 526px;
+    word-wrap: break-word;
   
   `
 export const Summary = styled.div`
