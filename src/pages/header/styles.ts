@@ -13,6 +13,10 @@ export const HeaderContainer = styled.div`
         display: flex;
         align-items: center;
     }
+    
+    a {
+        text-decoration: none;   
+    }
 `
 
 export const ShoppingCartStyle = styled.div`
@@ -40,7 +44,9 @@ export const ShoppingCartStyle = styled.div`
         width: 20px;
         height: 20px;
         border-radius: 9999px;
-    
+        
+        font-style: none;
+
     }
 `
 
