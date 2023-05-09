@@ -51,6 +51,12 @@ export const Span = styled.p`
 export const Input = styled.div`
     margin-top: 1rem;
     margin-right:1rem;
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
 `
 
 export const BaseInput = styled.input`
